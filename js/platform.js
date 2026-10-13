@@ -233,6 +233,10 @@ function getCurrentUser() {
 function setCurrentUser(userObj) {
   localStorage.setItem('mlscn_user', JSON.stringify(userObj));
 }
+if (typeof window !== 'undefined') {
+  window.setCurrentUser = setCurrentUser;
+  window.getCurrentUser = getCurrentUser;
+}
 
 // Render dynamic navbar based on user role
 function renderNavbar() {
@@ -398,8 +402,14 @@ function renderFooter() {
 }
 
 // Auto-run initialization on script load
-document.addEventListener('DOMContentLoaded', () => {
+function initPlatform() {
   initializeMockData();
   renderNavbar();
   renderFooter();
-});
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initPlatform);
+} else {
+  initPlatform();
+}

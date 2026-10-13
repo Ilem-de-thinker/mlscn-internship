@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Applicant Login - MLSCN</title>
-    <link rel="stylesheet" href="/src/index.css" />
+    <link rel="stylesheet" href="src/index.css" />
     <script src="https://cdn.tailwindcss.com"></script>
   </head>
   <body class="bg-slate-50 text-slate-900 font-sans antialiased min-h-screen flex flex-col justify-between">
@@ -29,7 +29,7 @@
             </div>
             <input type="password" id="login-password" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none" value="password" />
           </div>
-          <button type="submit" class="w-full bg-teal-700 hover:bg-teal-800 text-white font-medium py-3 rounded-xl text-sm transition shadow-sm">
+          <button type="submit" id="login-submit-btn" class="w-full bg-teal-700 hover:bg-teal-800 text-white font-medium py-3 rounded-xl text-sm transition shadow-sm">
             Sign In to Dashboard
           </button>
         </form>
@@ -41,14 +41,40 @@
     </main>
 
     <div class="dynamic-footer"></div>
-    <script src="/js/platform.js"></script>
+    <script src="js/platform.js"></script>
     <script>
-      document.getElementById('applicant-login-form').addEventListener('submit', (e) => {
-        e.preventDefault();
-        const license = document.getElementById('login-license').value;
-        setCurrentUser({ role: 'applicant', name: 'Chukwudi Okonkwo', license });
+      function handleLogin(e) {
+        if (e) e.preventDefault();
+        const licenseInput = document.getElementById('login-license');
+        const license = licenseInput ? licenseInput.value : 'MLSCN/PR/2026/9821';
+        const userObj = { role: 'applicant', name: 'Chukwudi Okonkwo', license };
+
+        try {
+          if (typeof setCurrentUser === 'function') {
+            setCurrentUser(userObj);
+          } else {
+            localStorage.setItem('mlscn_user', JSON.stringify(userObj));
+          }
+        } catch (err) {
+          console.warn('Local storage error:', err);
+        }
+
         window.location.href = 'applicant-dashboard.html';
-      });
+      }
+
+      const form = document.getElementById('applicant-login-form');
+      if (form) {
+        form.addEventListener('submit', handleLogin);
+      }
+      const btn = document.getElementById('login-submit-btn');
+      if (btn) {
+        btn.addEventListener('click', (e) => {
+          if (form && form.checkValidity && !form.checkValidity()) {
+            return;
+          }
+          handleLogin(e);
+        });
+      }
     </script>
   </body>
 </html>

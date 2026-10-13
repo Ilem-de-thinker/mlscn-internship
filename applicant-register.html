@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Applicant Registration - MLSCN</title>
-    <link rel="stylesheet" href="/src/index.css" />
+    <link rel="stylesheet" href="src/index.css" />
     <script src="https://cdn.tailwindcss.com"></script>
   </head>
   <body class="bg-slate-50 text-slate-900 font-sans antialiased min-h-screen flex flex-col justify-between">
@@ -46,15 +46,33 @@
     </main>
 
     <div class="dynamic-footer"></div>
-    <script src="/js/platform.js"></script>
+    <script src="js/platform.js"></script>
     <script>
-      document.getElementById('applicant-reg-form').addEventListener('submit', (e) => {
-        e.preventDefault();
-        const name = document.getElementById('reg-name').value;
-        const email = document.getElementById('reg-email').value;
-        setCurrentUser({ role: 'applicant', name, email });
+      function handleReg(e) {
+        if (e) e.preventDefault();
+        const nameInput = document.getElementById('reg-name');
+        const emailInput = document.getElementById('reg-email');
+        const name = nameInput ? nameInput.value : 'New Applicant';
+        const email = emailInput ? emailInput.value : '';
+        const userObj = { role: 'applicant', name, email };
+
+        try {
+          if (typeof setCurrentUser === 'function') {
+            setCurrentUser(userObj);
+          } else {
+            localStorage.setItem('mlscn_user', JSON.stringify(userObj));
+          }
+        } catch (err) {
+          console.warn('Local storage error:', err);
+        }
+
         window.location.href = 'applicant-dashboard.html';
-      });
+      }
+
+      const form = document.getElementById('applicant-reg-form');
+      if (form) {
+        form.addEventListener('submit', handleReg);
+      }
     </script>
   </body>
 </html>
