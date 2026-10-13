@@ -69,9 +69,25 @@
     <script src="js/platform.js"></script>
     <script>
       function renderDashboard() {
-        const apps = JSON.parse(localStorage.getItem('mlscn_applications')) || [];
+        const apps = window.getStoredArray ? window.getStoredArray('mlscn_applications') : (JSON.parse(localStorage.getItem('mlscn_applications')) || []);
         const container = document.getElementById('dashboard-applications-list');
         if (!container) return;
+
+        const user = window.getCurrentUser ? window.getCurrentUser() : {};
+        const welcomeHeading = document.querySelector('h1.text-3xl');
+        if (welcomeHeading && user.name) {
+          welcomeHeading.textContent = 'Welcome, ' + user.name;
+        }
+
+        if (apps.length === 0) {
+          container.innerHTML = `
+            <div class="p-8 text-center text-slate-500 bg-slate-50 rounded-xl border border-slate-200">
+              <p class="text-sm font-medium">No applications submitted yet.</p>
+              <a href="opportunities.html" class="inline-block mt-3 bg-teal-700 text-white px-4 py-2 rounded-lg text-xs font-semibold hover:bg-teal-800 transition">Explore Open Opportunities &rarr;</a>
+            </div>
+          `;
+          return;
+        }
 
         container.innerHTML = apps.map(app => `
           <div class="p-6 rounded-xl border border-slate-200 bg-slate-50 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">

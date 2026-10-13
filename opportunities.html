@@ -61,8 +61,8 @@
 
     <script src="js/platform.js"></script>
     <script>
-      document.addEventListener('DOMContentLoaded', () => {
-        const opps = JSON.parse(localStorage.getItem('mlscn_opportunities')) || [];
+      function initOpportunities() {
+        const opps = window.getStoredArray ? window.getStoredArray('mlscn_opportunities') : (JSON.parse(localStorage.getItem('mlscn_opportunities')) || []);
         const listContainer = document.getElementById('opportunities-list');
         const urlParams = new URLSearchParams(window.location.search);
         const qParam = urlParams.get('q') || '';
@@ -118,9 +118,16 @@
           renderList(filtered);
         }
 
-        document.getElementById('apply-filters-btn').addEventListener('click', filterAndRender);
+        const filterBtn = document.getElementById('apply-filters-btn');
+        if (filterBtn) filterBtn.addEventListener('click', filterAndRender);
         filterAndRender();
-      });
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initOpportunities);
+      } else {
+        initOpportunities();
+      }
     </script>
   </body>
 </html>

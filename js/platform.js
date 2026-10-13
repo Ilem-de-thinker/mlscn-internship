@@ -10,9 +10,23 @@ const NIGERIAN_STATES = [
   "Taraba", "Yobe", "Zamfara"
 ];
 
-// Initial mock data stored in localStorage if not present
-function initializeMockData() {
-  if (!localStorage.getItem('mlscn_institutions')) {
+// Helper to check if a collection needs seeding
+function shouldSeed(key) {
+  try {
+    const val = localStorage.getItem(key);
+    if (!val) return true;
+    const parsed = JSON.parse(val);
+    if (!Array.isArray(parsed) || parsed.length === 0) return true;
+    return false;
+  } catch {
+    return true;
+  }
+}
+
+// Initial mock data stored in localStorage if not present or empty
+function initializeMockData(force = false) {
+  try {
+    if (force || shouldSeed('mlscn_institutions')) {
     const institutions = [
       {
         id: 'inst-1',
@@ -74,7 +88,7 @@ function initializeMockData() {
     localStorage.setItem('mlscn_institutions', JSON.stringify(institutions));
   }
 
-  if (!localStorage.getItem('mlscn_opportunities')) {
+  if (force || shouldSeed('mlscn_opportunities')) {
     const opportunities = [
       {
         id: 'opp-1',
@@ -167,7 +181,7 @@ function initializeMockData() {
     localStorage.setItem('mlscn_opportunities', JSON.stringify(opportunities));
   }
 
-  if (!localStorage.getItem('mlscn_applications')) {
+  if (force || shouldSeed('mlscn_applications')) {
     const applications = [
       {
         id: 'app-101',
@@ -190,7 +204,7 @@ function initializeMockData() {
     localStorage.setItem('mlscn_applications', JSON.stringify(applications));
   }
 
-  if (!localStorage.getItem('mlscn_announcements')) {
+  if (force || shouldSeed('mlscn_announcements')) {
     const announcements = [
       {
         id: 'ann-1',
@@ -210,13 +224,36 @@ function initializeMockData() {
     localStorage.setItem('mlscn_announcements', JSON.stringify(announcements));
   }
 
-  if (!localStorage.getItem('mlscn_user')) {
+  if (force || !localStorage.getItem('mlscn_user')) {
     // Default guest / demo user state
     localStorage.setItem('mlscn_user', JSON.stringify({
       role: 'guest', // 'applicant', 'institution', 'admin', 'guest'
       name: '',
       email: ''
     }));
+  }
+  } catch (err) {
+    console.warn('Storage initialization warning:', err);
+  }
+}
+
+// Ensure mock data is immediately initialized into localStorage on script evaluation!
+initializeMockData();
+
+// Safe getter that guarantees non-empty array data
+function getStoredArray(key) {
+  try {
+    const val = localStorage.getItem(key);
+    if (val) {
+      const parsed = JSON.parse(val);
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+    }
+  } catch (e) {}
+  initializeMockData(true);
+  try {
+    return JSON.parse(localStorage.getItem(key)) || [];
+  } catch (e) {
+    return [];
   }
 }
 
@@ -234,6 +271,12 @@ function setCurrentUser(userObj) {
   localStorage.setItem('mlscn_user', JSON.stringify(userObj));
 }
 if (typeof window !== 'undefined') {
+  window.initializeMockData = initializeMockData;
+  window.resetDemoData = function() {
+    initializeMockData(true);
+    window.location.reload();
+  };
+  window.getStoredArray = getStoredArray;
   window.setCurrentUser = setCurrentUser;
   window.getCurrentUser = getCurrentUser;
 }
@@ -383,6 +426,7 @@ function renderFooter() {
                 <li><a href="terms.html" class="hover:text-teal-400 transition">Terms of Service</a></li>
                 <li><a href="contact.html" class="hover:text-teal-400 transition">Contact & Help Desk</a></li>
                 <li><a href="institution-verification.html" class="hover:text-teal-400 transition">Verify Accredited Center</a></li>
+                <li><button onclick="resetDemoData()" class="text-teal-400 hover:text-teal-300 transition text-xs flex items-center gap-1 cursor-pointer pt-1">↻ Reset Demo Data</button></li>
               </ul>
             </div>
           </div>

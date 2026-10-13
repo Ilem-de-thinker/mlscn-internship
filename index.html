@@ -186,8 +186,8 @@
 
     <script src="js/platform.js"></script>
     <script>
-      document.addEventListener('DOMContentLoaded', () => {
-        const opps = JSON.parse(localStorage.getItem('mlscn_opportunities')) || [];
+      function renderFeaturedOpportunities() {
+        const opps = window.getStoredArray ? window.getStoredArray('mlscn_opportunities') : (JSON.parse(localStorage.getItem('mlscn_opportunities')) || []);
         const grid = document.getElementById('featured-opportunities-grid');
         
         if (grid) {
@@ -216,6 +216,15 @@
             </div>
           `).join('');
         }
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', renderFeaturedOpportunities);
+      } else {
+        renderFeaturedOpportunities();
+      }
+
+      document.addEventListener('DOMContentLoaded', () => {
 
         const searchBtn = document.getElementById('hero-search-btn');
         if (searchBtn) {
