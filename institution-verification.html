@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Verify Training Institution - MLSCN</title>
+    <link rel="stylesheet" href="/src/index.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-slate-50 text-slate-900 font-sans antialiased min-h-screen flex flex-col justify-between">
+    <div class="dynamic-navbar"></div>
+
+    <main class="flex-grow max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12 w-full">
+      <div class="bg-white p-8 rounded-2xl border border-slate-200 shadow-xs space-y-6">
+        <div class="text-center">
+          <h1 class="text-2xl font-bold text-slate-900">Verify Accredited Training Center</h1>
+          <p class="text-slate-600 text-sm mt-1">Enter an institution name or accreditation number to check MLSCN standing.</p>
+        </div>
+
+        <div class="flex gap-3">
+          <input type="text" id="verify-input" placeholder="Enter institution name or code..." class="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none" />
+          <button id="verify-btn" class="bg-teal-700 hover:bg-teal-800 text-white font-medium px-6 py-2 rounded-xl text-sm transition">Verify</button>
+        </div>
+
+        <div id="verify-result" class="hidden p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm">
+          <p class="font-bold">✅ Verified Accredited Institution</p>
+          <p id="verify-details" class="mt-1 text-xs"></p>
+        </div>
+      </div>
+    </main>
+
+    <div class="dynamic-footer"></div>
+    <script src="/js/platform.js"></script>
+    <script>
+      document.getElementById('verify-btn').addEventListener('click', () => {
+        const query = document.getElementById('verify-input').value.toLowerCase();
+        const insts = JSON.parse(localStorage.getItem('mlscn_institutions')) || [];
+        const found = insts.find(i => i.name.toLowerCase().includes(query) || i.accreditationNumber.toLowerCase().includes(query));
+        const resBox = document.getElementById('verify-result');
+        const detBox = document.getElementById('verify-details');
+
+        if (found) {
+          resBox.classList.remove('hidden');
+          detBox.innerHTML = `<strong>${found.name}</strong> (${found.state}) is fully accredited by MLSCN. Accreditation Code: <strong>${found.accreditationNumber}</strong>. Approved Internship Quota: ${found.slots} slots.`;
+        } else {
+          resBox.classList.remove('hidden');
+          resBox.className = 'p-4 rounded-xl bg-red-50 border border-red-200 text-red-800 text-sm';
+          detBox.innerHTML = `No verified active institution found matching your query. Please check the spelling or contact MLSCN compliance unit.`;
+        }
+      });
+    </script>
+  </body>
+</html>

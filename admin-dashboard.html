@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MLSCN Administration Dashboard</title>
+    <link rel="stylesheet" href="/src/index.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-slate-50 text-slate-900 font-sans antialiased min-h-screen flex flex-col justify-between">
+    <div class="dynamic-navbar"></div>
+
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 w-full">
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+        <div>
+          <span class="text-xs font-semibold uppercase tracking-wider text-amber-800 bg-amber-50 px-3 py-1 rounded-full">MLSCN Regulatory Oversight</span>
+          <h1 class="text-3xl font-extrabold text-slate-900 mt-2">National Administrative Control Center</h1>
+          <p class="text-slate-600 text-sm">Authorized Administrator • Medical Laboratory Science Council of Nigeria</p>
+        </div>
+        <div class="flex gap-3">
+          <a href="manage-institutions.html" class="bg-slate-900 hover:bg-slate-800 text-white font-medium px-5 py-2.5 rounded-xl text-sm transition shadow-sm">
+            Manage Institutions
+          </a>
+          <a href="national-analytics.html" class="bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 font-medium px-5 py-2.5 rounded-xl text-sm transition">
+            National Analytics
+          </a>
+        </div>
+      </div>
+
+      <!-- Quick Metrics -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs flex items-center space-x-4">
+          <div class="w-14 h-14 bg-blue-50 text-blue-700 rounded-xl flex items-center justify-center font-bold text-xl">🏥</div>
+          <div>
+            <p class="text-2xl font-bold text-slate-900">45</p>
+            <p class="text-xs text-slate-500 font-medium">Accredited Centers</p>
+          </div>
+        </div>
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs flex items-center space-x-4">
+          <div class="w-14 h-14 bg-teal-50 text-teal-700 rounded-xl flex items-center justify-center font-bold text-xl">👨‍🎓</div>
+          <div>
+            <p class="text-2xl font-bold text-slate-900">1,240</p>
+            <p class="text-xs text-slate-500 font-medium">Registered Applicants</p>
+          </div>
+        </div>
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs flex items-center space-x-4">
+          <div class="w-14 h-14 bg-amber-50 text-amber-700 rounded-xl flex items-center justify-center font-bold text-xl">📋</div>
+          <div>
+            <p class="text-2xl font-bold text-slate-900">120</p>
+            <p class="text-xs text-slate-500 font-medium">Active Opportunities</p>
+          </div>
+        </div>
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs flex items-center space-x-4">
+          <div class="w-14 h-14 bg-emerald-50 text-emerald-700 rounded-xl flex items-center justify-center font-bold text-xl">⚖️</div>
+          <div>
+            <p class="text-2xl font-bold text-slate-900">0</p>
+            <p class="text-xs text-slate-500 font-medium">Pending Complaints</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin Management Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs flex flex-col justify-between">
+          <div>
+            <h3 class="font-bold text-lg text-slate-900 mb-2">Manage Institutions</h3>
+            <p class="text-slate-600 text-sm mb-4">Review registrations, verify accreditation numbers, and update institutional quotas.</p>
+          </div>
+          <a href="manage-institutions.html" class="text-slate-900 font-semibold text-sm hover:underline">Manage Institutions &rarr;</a>
+        </div>
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs flex flex-col justify-between">
+          <div>
+            <h3 class="font-bold text-lg text-slate-900 mb-2">Manage Announcements</h3>
+            <p class="text-slate-600 text-sm mb-4">Publish official policy circulars, placement guidelines, and notifications.</p>
+          </div>
+          <a href="manage-announcements.html" class="text-slate-900 font-semibold text-sm hover:underline">Manage Announcements &rarr;</a>
+        </div>
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs flex flex-col justify-between">
+          <div>
+            <h3 class="font-bold text-lg text-slate-900 mb-2">National Analytics & Reports</h3>
+            <p class="text-slate-600 text-sm mb-4">View comprehensive placement reports, state-by-state breakdowns, and audit logs.</p>
+          </div>
+          <a href="national-analytics.html" class="text-slate-900 font-semibold text-sm hover:underline">View Analytics &rarr;</a>
+        </div>
+      </div>
+    </main>
+
+    <div class="dynamic-footer"></div>
+    <script src="/js/platform.js"></script>
+  </body>
+</html>

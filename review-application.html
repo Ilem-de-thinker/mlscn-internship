@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Review Application & Documents - MLSCN</title>
+    <link rel="stylesheet" href="/src/index.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-slate-50 text-slate-900 font-sans antialiased min-h-screen flex flex-col justify-between">
+    <div class="dynamic-navbar"></div>
+
+    <main class="flex-grow max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 w-full">
+      <div id="review-content" class="bg-white p-8 rounded-2xl border border-slate-200 shadow-xs space-y-8">
+        <!-- Rendered via JS -->
+      </div>
+    </main>
+
+    <!-- Document Viewer Modal -->
+    <div id="doc-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs hidden items-center justify-center z-50 p-4">
+      <div class="bg-white w-full max-w-3xl rounded-2xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[90vh]">
+        <div class="px-6 py-4 bg-slate-900 text-white flex justify-between items-center">
+          <h3 id="modal-doc-title" class="font-bold text-base">Document Preview</h3>
+          <button id="close-modal" class="text-slate-400 hover:text-white text-xl font-bold">&times;</button>
+        </div>
+        <div class="p-6 overflow-y-auto flex-grow bg-slate-100 flex flex-col items-center justify-center">
+          <div class="bg-white p-8 rounded-xl shadow-md border border-slate-200 w-full max-w-xl text-center space-y-4">
+            <div class="w-16 h-16 bg-teal-50 text-teal-700 rounded-full flex items-center justify-center mx-auto text-2xl">📜</div>
+            <h4 id="preview-doc-name" class="font-bold text-slate-900 text-lg"></h4>
+            <p class="text-xs text-slate-500">Verified MLSCN Secure Credential Storage • SHA-256 Hash Verified</p>
+            <div class="p-4 bg-slate-50 rounded-lg border border-slate-200 text-xs text-slate-600 font-mono text-left space-y-1">
+              <p>Issuer: Medical Laboratory Science Council of Nigeria</p>
+              <p>Status: Officially Certified & Validated</p>
+              <p>Timestamp: 2026-10-13 11:30:12 UTC</p>
+            </div>
+            <div class="pt-4 flex justify-center gap-3">
+              <button onclick="alert('Downloading verified document copy...')" class="bg-teal-700 hover:bg-teal-800 text-white px-4 py-2 rounded-xl text-xs font-medium transition">Download PDF Copy</button>
+              <button id="close-modal-btn" class="bg-slate-200 hover:bg-slate-300 text-slate-800 px-4 py-2 rounded-xl text-xs font-medium transition">Close Preview</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dynamic-footer"></div>
+    <script src="/js/platform.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const appId = urlParams.get('id') || 'app-101';
+        const apps = JSON.parse(localStorage.getItem('mlscn_applications')) || [];
+        const app = apps.find(a => a.id === appId) || apps[0];
+
+        const container = document.getElementById('review-content');
+        container.innerHTML = `
+          <div class="flex justify-between items-start border-b border-slate-100 pb-6">
+            <div>
+              <span class="text-xs font-semibold px-3 py-1 rounded-full bg-amber-50 text-amber-800">${app.status}</span>
+              <h1 class="text-2xl font-bold text-slate-900 mt-2">Candidate Review: ${app.applicantName}</h1>
+              <p class="text-teal-800 text-sm font-semibold">${app.opportunityTitle}</p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+            <div>
+              <span class="block text-xs text-slate-500 font-semibold uppercase">MLSCN Registration No</span>
+              <strong class="text-slate-900 text-base">${app.mlscnNumber}</strong>
+            </div>
+            <div>
+              <span class="block text-xs text-slate-500 font-semibold uppercase">University Attended</span>
+              <strong class="text-slate-900 text-base">${app.university} (${app.graduationYear})</strong>
+            </div>
+            <div>
+              <span class="block text-xs text-slate-500 font-semibold uppercase">Degree CGPA</span>
+              <strong class="text-slate-900 text-base">${app.cgpa}</strong>
+            </div>
+            <div>
+              <span class="block text-xs text-slate-500 font-semibold uppercase">Contact Email</span>
+              <strong class="text-slate-900 text-base">${app.applicantEmail}</strong>
+            </div>
+          </div>
+
+          <div class="border-t border-slate-100 pt-6">
+            <h3 class="font-bold text-slate-900 text-base mb-3">Verification Documents & Uploaded Materials</h3>
+            <p class="text-slate-600 text-sm mb-4">Click any uploaded document below to inspect and view the verified credentials:</p>
+            <ul class="space-y-3 mb-8">
+              ${app.documents.map((doc, idx) => `
+                <li onclick="openDocModal('${doc}')" class="flex items-center justify-between p-4 bg-slate-50 hover:bg-teal-50/50 rounded-xl border border-slate-200 cursor-pointer transition">
+                  <div class="flex items-center space-x-3">
+                    <span class="text-teal-700 font-bold text-lg">📄</span>
+                    <div>
+                      <span class="font-semibold text-slate-900 text-sm block">${doc}</span>
+                      <span class="text-xs text-slate-500">Click to view secure document preview</span>
+                    </div>
+                  </div>
+                  <span class="bg-emerald-100 text-emerald-800 text-xs font-semibold px-3 py-1 rounded-full">Verified Authentic</span>
+                </li>
+              `).join('')}
+            </ul>
+
+            <div class="flex gap-4">
+              <button onclick="alert('Candidate shortlisted successfully!'); window.location.href='institution-applicants.html';" class="flex-1 bg-teal-700 hover:bg-teal-800 text-white font-medium py-3 rounded-xl text-sm transition shadow-sm">
+                Shortlist Candidate
+              </button>
+              <button onclick="alert('Candidate accepted for placement!'); window.location.href='institution-applicants.html';" class="flex-1 bg-emerald-700 hover:bg-emerald-800 text-white font-medium py-3 rounded-xl text-sm transition shadow-sm">
+                Accept for Internship
+              </button>
+            </div>
+          </div>
+        `;
+
+        const modal = document.getElementById('doc-modal');
+        const closeModal = document.getElementById('close-modal');
+        const closeModalBtn = document.getElementById('close-modal-btn');
+        const modalTitle = document.getElementById('modal-doc-title');
+        const previewName = document.getElementById('preview-doc-name');
+
+        window.openDocModal = function(docName) {
+          modalTitle.innerText = `Document Preview: ${docName}`;
+          previewName.innerText = docName;
+          modal.classList.remove('hidden');
+          modal.classList.add('flex');
+        };
+
+        function closeDocModal() {
+          modal.classList.add('hidden');
+          modal.classList.remove('flex');
+        }
+
+        closeModal.addEventListener('click', closeDocModal);
+        closeModalBtn.addEventListener('click', closeDocModal);
+      });
+    </script>
+  </body>
+</html>

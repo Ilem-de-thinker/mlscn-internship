@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Manage Opportunities - MLSCN</title>
+    <link rel="stylesheet" href="/src/index.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-slate-50 text-slate-900 font-sans antialiased min-h-screen flex flex-col justify-between">
+    <div class="dynamic-navbar"></div>
+
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 w-full">
+      <div class="flex justify-between items-center mb-8">
+        <div>
+          <h1 class="text-3xl font-extrabold text-slate-900">Manage Internship Opportunities</h1>
+          <p class="text-slate-600 text-sm mt-1">Turn listings on and off, edit vacancy requirements, and view applicants.</p>
+        </div>
+        <a href="create-opportunity.html" class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-5 py-2.5 rounded-xl text-sm transition shadow-sm">
+          + Post New Opportunity
+        </a>
+      </div>
+
+      <div id="inst-opportunities-list" class="space-y-4">
+        <!-- Rendered via JS -->
+      </div>
+    </main>
+
+    <div class="dynamic-footer"></div>
+    <script src="/js/platform.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        function renderOpportunities() {
+          const opps = JSON.parse(localStorage.getItem('mlscn_opportunities')) || [];
+          const container = document.getElementById('inst-opportunities-list');
+
+          container.innerHTML = opps.map(opp => `
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+              <div>
+                <div class="flex items-center space-x-3 mb-2">
+                  <span class="text-xs font-semibold px-2.5 py-1 rounded-full ${opp.status === 'Active' ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-700'}">${opp.status}</span>
+                  <span class="text-xs text-slate-500">Deadline: ${opp.deadline}</span>
+                </div>
+                <h3 class="text-xl font-bold text-slate-900 mb-1">${opp.title}</h3>
+                <p class="text-xs text-slate-500">Slots: <strong>${opp.slots}</strong> • Duration: ${opp.duration}</p>
+              </div>
+              <div class="flex items-center gap-3">
+                <button onclick="toggleOpportunity('${opp.id}')" class="px-4 py-2 rounded-xl text-xs font-semibold transition ${opp.status === 'Active' ? 'bg-amber-100 text-amber-800 hover:bg-amber-200' : 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200'}">
+                  ${opp.status === 'Active' ? 'Turn Off (Close)' : 'Turn On (Activate)'}
+                </button>
+                <a href="edit-opportunity.html?id=${opp.id}" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium px-4 py-2 rounded-xl text-xs transition">Edit</a>
+                <a href="institution-applicants.html" class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-xl text-xs transition">Applicants</a>
+              </div>
+            </div>
+          `).join('');
+        }
+
+        window.toggleOpportunity = function(id) {
+          let opps = JSON.parse(localStorage.getItem('mlscn_opportunities')) || [];
+          opps = opps.map(o => {
+            if (o.id === id) {
+              o.status = o.status === 'Active' ? 'Closed' : 'Active';
+            }
+            return o;
+          });
+          localStorage.setItem('mlscn_opportunities', JSON.stringify(opps));
+          renderOpportunities();
+        };
+
+        renderOpportunities();
+      });
+    </script>
+  </body>
+</html>

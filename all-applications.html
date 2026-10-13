@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>All Applications - MLSCN Admin</title>
+    <link rel="stylesheet" href="/src/index.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-slate-50 text-slate-900 font-sans antialiased min-h-screen flex flex-col justify-between">
+    <div class="dynamic-navbar"></div>
+
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 w-full">
+      <div class="mb-8">
+        <h1 class="text-3xl font-extrabold text-slate-900">All National Applications</h1>
+        <p class="text-slate-600 text-sm mt-1">Comprehensive audit of all internship applications submitted nationwide.</p>
+      </div>
+
+      <div id="all-apps-list" class="space-y-4">
+        <!-- Rendered via JS -->
+      </div>
+    </main>
+
+    <div class="dynamic-footer"></div>
+    <script src="/js/platform.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const apps = JSON.parse(localStorage.getItem('mlscn_applications')) || [];
+        const container = document.getElementById('all-apps-list');
+        container.innerHTML = apps.map(a => `
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs flex justify-between items-center">
+            <div>
+              <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-amber-50 text-amber-800">${a.status}</span>
+              <h3 class="font-bold text-base text-slate-900 mt-2">${a.opportunityTitle}</h3>
+              <p class="text-xs text-slate-500">Applicant: <strong>${a.applicantName}</strong> (${a.mlscnNumber}) • Institution: ${a.institutionName}</p>
+            </div>
+          </div>
+        `).join('');
+      });
+    </script>
+  </body>
+</html>

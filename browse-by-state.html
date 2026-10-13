@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Browse Openings by State - MLSCN</title>
+    <link rel="stylesheet" href="/src/index.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-slate-50 text-slate-900 font-sans antialiased min-h-screen flex flex-col justify-between">
+    <div class="dynamic-navbar"></div>
+
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 w-full">
+      <div class="mb-8">
+        <h1 class="text-3xl font-extrabold text-slate-900">Browse Openings by State</h1>
+        <p class="text-slate-600 text-sm mt-1">Select any of the 36 states or the Federal Capital Territory (FCT) to find accredited medical laboratory internship postings.</p>
+      </div>
+
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-12" id="states-grid">
+        <!-- Rendered via JS -->
+      </div>
+
+      <div id="state-results-container" class="space-y-6">
+        <!-- Results per selected state -->
+      </div>
+    </main>
+
+    <div class="dynamic-footer"></div>
+
+    <script src="/js/platform.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const statesGrid = document.getElementById('states-grid');
+        const resultsContainer = document.getElementById('state-results-container');
+        const opps = JSON.parse(localStorage.getItem('mlscn_opportunities')) || [];
+        const institutions = JSON.parse(localStorage.getItem('mlscn_institutions')) || [];
+
+        function renderStates() {
+          statesGrid.innerHTML = NIGERIAN_STATES.map(st => `
+            <button onclick="selectState('${st}')" class="state-btn bg-white hover:bg-teal-700 hover:text-white text-slate-800 font-medium p-4 rounded-2xl border border-slate-200 text-center text-sm shadow-xs transition flex flex-col items-center justify-center space-y-1">
+              <span>📍</span>
+              <span>${st}</span>
+            </button>
+          `).join('');
+        }
+
+        window.selectState = function(stateName) {
+          const matchingOpps = opps.filter(o => o.state === stateName);
+          const matchingInsts = institutions.filter(i => i.state === stateName);
+
+          resultsContainer.innerHTML = `
+            <div class="bg-white p-8 rounded-2xl border border-slate-200 shadow-xs mb-8">
+              <h2 class="text-2xl font-bold text-slate-900 mb-2">${stateName} State Openings</h2>
+              <p class="text-slate-600 text-sm mb-6">Found ${matchingInsts.length} accredited institutions and ${matchingOpps.length} active internship opportunities.</p>
+              
+              <h3 class="font-bold text-slate-900 text-lg mb-4">Internship Opportunities in ${stateName}</h3>
+              ${matchingOpps.length === 0 ? `<p class="text-sm text-slate-500 italic">No active internship positions currently listed for this state.</p>` : `
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  ${matchingOpps.map(opp => `
+                    <div class="p-6 rounded-xl border border-slate-200 bg-slate-50 flex flex-col justify-between">
+                      <div>
+                        <h4 class="font-bold text-base text-slate-900 mb-1"><a href="opportunity-details.html?id=${opp.id}" class="hover:text-teal-700">${opp.title}</a></h4>
+                        <p class="text-xs font-semibold text-teal-800 mb-2">${opp.institutionName}</p>
+                        <p class="text-xs text-slate-600 line-clamp-2 mb-4">${opp.description}</p>
+                      </div>
+                      <div class="flex justify-between items-center pt-3 border-t border-slate-200 text-xs">
+                        <span class="text-slate-500">Slots: <strong>${opp.slots}</strong></span>
+                        <a href="opportunity-details.html?id=${opp.id}" class="text-teal-700 hover:underline font-semibold">View Details &rarr;</a>
+                      </div>
+                    </div>
+                  `).join('')}
+                </div>
+              `}
+            </div>
+          `;
+        };
+
+        renderStates();
+        selectState('Lagos'); // Default view
+      });
+    </script>
+  </body>
+</html>

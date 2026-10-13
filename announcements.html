@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Official Announcements - MLSCN</title>
+    <link rel="stylesheet" href="/src/index.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-slate-50 text-slate-900 font-sans antialiased min-h-screen flex flex-col justify-between">
+    <div class="dynamic-navbar"></div>
+
+    <main class="flex-grow max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 w-full">
+      <div class="mb-8">
+        <h1 class="text-3xl font-extrabold text-slate-900">Official Announcements</h1>
+        <p class="text-slate-600 text-sm mt-1">Latest updates, placement guidelines, and policy circulars from the Medical Laboratory Science Council of Nigeria.</p>
+      </div>
+
+      <div id="announcements-list" class="space-y-6">
+        <!-- Rendered via JS -->
+      </div>
+    </main>
+
+    <div class="dynamic-footer"></div>
+
+    <script src="/js/platform.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const anns = JSON.parse(localStorage.getItem('mlscn_announcements')) || [];
+        const container = document.getElementById('announcements-list');
+        
+        container.innerHTML = anns.map(a => `
+          <div class="bg-white p-8 rounded-2xl border border-slate-200 shadow-xs">
+            <div class="flex items-center space-x-3 mb-3">
+              <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-teal-50 text-teal-700">${a.category}</span>
+              <span class="text-xs text-slate-500">${a.date}</span>
+            </div>
+            <h2 class="text-xl font-bold text-slate-900 mb-3">${a.title}</h2>
+            <p class="text-slate-600 text-sm leading-relaxed">${a.content}</p>
+          </div>
+        `).join('');
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Application Details - MLSCN</title>
+    <link rel="stylesheet" href="/src/index.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-slate-50 text-slate-900 font-sans antialiased min-h-screen flex flex-col justify-between">
+    <div class="dynamic-navbar"></div>
+
+    <main class="flex-grow max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 w-full">
+      <div id="application-details-content" class="bg-white p-8 rounded-2xl border border-slate-200 shadow-xs space-y-6">
+        <!-- Rendered via JS -->
+      </div>
+    </main>
+
+    <div class="dynamic-footer"></div>
+    <script src="/js/platform.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const appId = urlParams.get('id') || 'app-101';
+        const apps = JSON.parse(localStorage.getItem('mlscn_applications')) || [];
+        const app = apps.find(a => a.id === appId) || apps[0];
+
+        const container = document.getElementById('application-details-content');
+        if (!app) {
+          container.innerHTML = `<p>Application not found.</p>`;
+          return;
+        }
+
+        container.innerHTML = `
+          <div class="flex justify-between items-start border-b border-slate-100 pb-6">
+            <div>
+              <span class="text-xs font-semibold px-3 py-1 rounded-full bg-amber-50 text-amber-800">${app.status}</span>
+              <h1 class="text-2xl font-bold text-slate-900 mt-2">${app.opportunityTitle}</h1>
+              <p class="text-teal-800 text-sm font-semibold">${app.institutionName}</p>
+            </div>
+            <div class="text-right">
+              <span class="text-xs text-slate-500 block">Application ID</span>
+              <strong class="text-slate-900">${app.id}</strong>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+            <div>
+              <span class="block text-xs text-slate-500 font-semibold uppercase">Applicant Name</span>
+              <strong class="text-slate-900 text-base">${app.applicantName}</strong>
+            </div>
+            <div>
+              <span class="block text-xs text-slate-500 font-semibold uppercase">MLSCN Registration Number</span>
+              <strong class="text-slate-900 text-base">${app.mlscnNumber}</strong>
+            </div>
+            <div>
+              <span class="block text-xs text-slate-500 font-semibold uppercase">University</span>
+              <strong class="text-slate-900 text-base">${app.university}</strong>
+            </div>
+            <div>
+              <span class="block text-xs text-slate-500 font-semibold uppercase">Submission Date</span>
+              <strong class="text-slate-900 text-base">${app.submittedDate}</strong>
+            </div>
+          </div>
+
+          <div class="border-t border-slate-100 pt-6">
+            <h3 class="font-bold text-slate-900 text-base mb-3">Submitted Credentials & Documents</h3>
+            <ul class="space-y-2">
+              ${app.documents.map(doc => `
+                <li class="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-200 text-sm">
+                  <span class="font-medium text-slate-700">${doc}</span>
+                  <span class="text-xs text-emerald-700 font-semibold">Verified Upload</span>
+                </li>
+              `).join('')}
+            </ul>
+          </div>
+        `;
+      });
+    </script>
+  </body>
+</html>

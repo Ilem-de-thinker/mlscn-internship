@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>National Opportunities Audit - MLSCN Admin</title>
+    <link rel="stylesheet" href="/src/index.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-slate-50 text-slate-900 font-sans antialiased min-h-screen flex flex-col justify-between">
+    <div class="dynamic-navbar"></div>
+
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 w-full">
+      <div class="mb-8">
+        <h1 class="text-3xl font-extrabold text-slate-900">National Opportunities Oversight</h1>
+        <p class="text-slate-600 text-sm mt-1">Review and moderate all internship listings across Nigeria.</p>
+      </div>
+
+      <div id="admin-opps-list" class="space-y-4">
+        <!-- Rendered via JS -->
+      </div>
+    </main>
+
+    <div class="dynamic-footer"></div>
+    <script src="/js/platform.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const opps = JSON.parse(localStorage.getItem('mlscn_opportunities')) || [];
+        const container = document.getElementById('admin-opps-list');
+        container.innerHTML = opps.map(o => `
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs flex justify-between items-center">
+            <div>
+              <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-teal-50 text-teal-700">${o.state}</span>
+              <h3 class="font-bold text-base text-slate-900 mt-2">${o.title}</h3>
+              <p class="text-xs text-slate-500">${o.institutionName} • Slots: ${o.slots}</p>
+            </div>
+            <span class="text-xs font-semibold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full">Active & Approved</span>
+          </div>
+        `).join('');
+      });
+    </script>
+  </body>
+</html>
