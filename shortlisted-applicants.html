@@ -16,12 +16,55 @@
         <p class="text-slate-600 text-sm mt-1">Candidates shortlisted for final selection and assessment.</p>
       </div>
 
-      <div class="bg-white p-12 rounded-2xl border border-slate-200 text-center text-slate-500">
-        Review and shortlist candidates from your <a href="institution-applicants.html" class="text-blue-600 underline font-semibold">applicant submissions list</a>.
+      <div id="shortlisted-list" class="space-y-4">
+        <!-- Rendered via JS -->
       </div>
     </main>
 
     <div class="dynamic-footer"></div>
     <script src="js/platform.js"></script>
+    <script>
+      function renderShortlisted() {
+        const apps = window.getStoredArray ? window.getStoredArray('mlscn_applications') : (JSON.parse(localStorage.getItem('mlscn_applications')) || []);
+        const shortlisted = apps.filter(a => a.status === 'Shortlisted');
+        const container = document.getElementById('shortlisted-list');
+
+        if (!container) return;
+
+        if (shortlisted.length === 0) {
+          container.innerHTML = `
+            <div class="bg-white p-12 rounded-2xl border border-slate-200 text-center text-slate-500">
+              No candidates currently shortlisted. Review and shortlist candidates from your 
+              <a href="institution-applicants.html" class="text-teal-700 underline font-semibold">applicant submissions list</a>.
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = shortlisted.map(app => `
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+            <div>
+              <div class="flex items-center space-x-3 mb-2">
+                <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-teal-50 text-teal-800">Shortlisted</span>
+                <span class="text-xs text-slate-500">MLSCN: ${app.mlscnNumber}</span>
+              </div>
+              <h3 class="text-xl font-bold text-slate-900 mb-1"><a href="review-application.html?id=${app.id}" class="hover:text-teal-700">${app.applicantName}</a></h3>
+              <p class="text-xs font-medium text-teal-800">${app.university} • CGPA: ${app.cgpa} • Applied for: ${app.opportunityTitle}</p>
+            </div>
+            <div class="flex gap-3">
+              <a href="review-application.html?id=${app.id}" class="bg-teal-700 hover:bg-teal-800 text-white font-medium px-5 py-2.5 rounded-xl text-xs transition">
+                View & Assess
+              </a>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', renderShortlisted);
+      } else {
+        renderShortlisted();
+      }
+    </script>
   </body>
 </html>

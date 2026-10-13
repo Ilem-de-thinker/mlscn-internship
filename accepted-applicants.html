@@ -16,12 +16,56 @@
         <p class="text-slate-600 text-sm mt-1">Candidates officially offered internship placement positions.</p>
       </div>
 
-      <div class="bg-white p-12 rounded-2xl border border-slate-200 text-center text-slate-500">
-        No interns marked as accepted yet.
+      <div id="accepted-list" class="space-y-4">
+        <!-- Rendered via JS -->
       </div>
     </main>
 
     <div class="dynamic-footer"></div>
     <script src="js/platform.js"></script>
+    <script>
+      function renderAccepted() {
+        const apps = window.getStoredArray ? window.getStoredArray('mlscn_applications') : (JSON.parse(localStorage.getItem('mlscn_applications')) || []);
+        const accepted = apps.filter(a => a.status === 'Accepted');
+        const container = document.getElementById('accepted-list');
+
+        if (!container) return;
+
+        if (accepted.length === 0) {
+          container.innerHTML = `
+            <div class="bg-white p-12 rounded-2xl border border-slate-200 text-center text-slate-500">
+              No interns officially accepted yet. Review applicants and click "Accept for Internship" from the 
+              <a href="institution-applicants.html" class="text-emerald-700 underline font-semibold">applicant review portal</a>.
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = accepted.map(app => `
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+            <div>
+              <div class="flex items-center space-x-3 mb-2">
+                <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-800">Placement Accepted</span>
+                <span class="text-xs text-slate-500">MLSCN: ${app.mlscnNumber}</span>
+              </div>
+              <h3 class="text-xl font-bold text-slate-900 mb-1">${app.applicantName}</h3>
+              <p class="text-xs font-medium text-teal-800">${app.university} • Degree: ${app.cgpa} • Role: ${app.opportunityTitle}</p>
+              <p class="text-xs text-slate-500 mt-1">Confirmed Placement Center: ${app.institutionName}</p>
+            </div>
+            <div class="flex gap-3">
+              <span class="bg-emerald-100 text-emerald-800 font-semibold px-4 py-2 rounded-xl text-xs flex items-center gap-1">
+                ✓ Placement Confirmed
+              </span>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', renderAccepted);
+      } else {
+        renderAccepted();
+      }
+    </script>
   </body>
 </html>

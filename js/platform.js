@@ -11,12 +11,12 @@ const NIGERIAN_STATES = [
 ];
 
 // Helper to check if a collection needs seeding
-function shouldSeed(key) {
+function shouldSeed(key, minCount = 3) {
   try {
     const val = localStorage.getItem(key);
     if (!val) return true;
     const parsed = JSON.parse(val);
-    if (!Array.isArray(parsed) || parsed.length === 0) return true;
+    if (!Array.isArray(parsed) || parsed.length < minCount) return true;
     return false;
   } catch {
     return true;
@@ -26,212 +26,450 @@ function shouldSeed(key) {
 // Initial mock data stored in localStorage if not present or empty
 function initializeMockData(force = false) {
   try {
-    if (force || shouldSeed('mlscn_institutions')) {
-    const institutions = [
-      {
-        id: 'inst-1',
-        name: 'Lagos University Teaching Hospital (LUTH)',
-        state: 'Lagos',
-        city: 'Idi-Araba, Surulere',
-        type: 'Federal Teaching Hospital',
-        status: 'Verified',
-        email: 'internships@luth.gov.ng',
-        phone: '+234 1 555 0192',
-        logo: 'https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?auto=format&fit=crop&w=200&q=80',
-        accreditationNumber: 'MLSCN/ACC/2021/045',
-        description: 'Premier federal teaching hospital offering comprehensive medical laboratory internship rotations across Chemical Pathology, Hematology, Microbiology, and Histopathology.',
-        slots: 25
-      },
-      {
-        id: 'inst-2',
-        name: 'University College Hospital (UCH)',
-        state: 'Oyo',
-        city: 'Ibadan',
-        type: 'Federal Teaching Hospital',
-        status: 'Verified',
-        email: 'interim@uch-ibadan.org.ng',
-        phone: '+234 2 810 0223',
-        logo: 'https://images.unsplash.com/photo-1538108149319-fbb6c18f96fb?auto=format&fit=crop&w=200&q=80',
-        accreditationNumber: 'MLSCN/ACC/2020/012',
-        description: 'World-class medical training and diagnostic center with state-of-the-art molecular and pathology laboratories.',
-        slots: 30
-      },
-      {
-        id: 'inst-3',
-        name: 'National Hospital Abuja',
-        state: 'FCT - Abuja',
-        city: 'Central Business District, Abuja',
-        type: 'Federal Tertiary Hospital',
-        status: 'Verified',
-        email: 'hr@nationalhospital.gov.ng',
-        phone: '+234 9 234 5000',
-        logo: 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=200&q=80',
-        accreditationNumber: 'MLSCN/ACC/2022/089',
-        description: 'Ultra-modern healthcare delivery and internship institution equipped with advanced diagnostic facilities.',
-        slots: 20
-      },
-      {
-        id: 'inst-4',
-        name: 'University of Nigeria Teaching Hospital (UNTH)',
-        state: 'Enugu',
-        city: 'Ituku-Ozalla, Enugu',
-        type: 'Federal Teaching Hospital',
-        status: 'Verified',
-        email: 'internships@unth.gov.ng',
-        phone: '+234 42 250 200',
-        logo: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&w=200&q=80',
-        accreditationNumber: 'MLSCN/ACC/2019/034',
-        description: 'Renowned medical center providing rigorous professional internship training in medical laboratory science.',
-        slots: 18
-      }
-    ];
-    localStorage.setItem('mlscn_institutions', JSON.stringify(institutions));
-  }
+    if (force || shouldSeed('mlscn_institutions', 6)) {
+      const institutions = [
+        {
+          id: 'inst-1',
+          name: 'Lagos University Teaching Hospital (LUTH)',
+          state: 'Lagos',
+          city: 'Idi-Araba, Surulere',
+          type: 'Federal Teaching Hospital',
+          status: 'Verified',
+          email: 'internships@luth.gov.ng',
+          phone: '+234 1 555 0192',
+          logo: 'https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?auto=format&fit=crop&w=200&q=80',
+          accreditationNumber: 'MLSCN/ACC/2021/045',
+          description: 'Premier federal teaching hospital offering comprehensive medical laboratory internship rotations across Chemical Pathology, Hematology, Microbiology, and Histopathology.',
+          slots: 25
+        },
+        {
+          id: 'inst-2',
+          name: 'University College Hospital (UCH)',
+          state: 'Oyo',
+          city: 'Ibadan',
+          type: 'Federal Teaching Hospital',
+          status: 'Verified',
+          email: 'interim@uch-ibadan.org.ng',
+          phone: '+234 2 810 0223',
+          logo: 'https://images.unsplash.com/photo-1538108149319-fbb6c18f96fb?auto=format&fit=crop&w=200&q=80',
+          accreditationNumber: 'MLSCN/ACC/2020/012',
+          description: 'World-class medical training and diagnostic center with state-of-the-art molecular and pathology laboratories.',
+          slots: 30
+        },
+        {
+          id: 'inst-3',
+          name: 'National Hospital Abuja',
+          state: 'FCT - Abuja',
+          city: 'Central Business District, Abuja',
+          type: 'Federal Tertiary Hospital',
+          status: 'Verified',
+          email: 'hr@nationalhospital.gov.ng',
+          phone: '+234 9 234 5000',
+          logo: 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=200&q=80',
+          accreditationNumber: 'MLSCN/ACC/2022/089',
+          description: 'Ultra-modern healthcare delivery and internship institution equipped with advanced diagnostic facilities.',
+          slots: 20
+        },
+        {
+          id: 'inst-4',
+          name: 'University of Nigeria Teaching Hospital (UNTH)',
+          state: 'Enugu',
+          city: 'Ituku-Ozalla, Enugu',
+          type: 'Federal Teaching Hospital',
+          status: 'Verified',
+          email: 'internships@unth.gov.ng',
+          phone: '+234 42 250 200',
+          logo: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&w=200&q=80',
+          accreditationNumber: 'MLSCN/ACC/2019/034',
+          description: 'Renowned medical center providing rigorous professional internship training in medical laboratory science.',
+          slots: 18
+        },
+        {
+          id: 'inst-5',
+          name: 'University of Benin Teaching Hospital (UBTH)',
+          state: 'Edo',
+          city: 'Ugbowo, Benin City',
+          type: 'Federal Teaching Hospital',
+          status: 'Verified',
+          email: 'internships@ubth.org.ng',
+          phone: '+234 52 600 400',
+          logo: 'https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&w=200&q=80',
+          accreditationNumber: 'MLSCN/ACC/2021/077',
+          description: 'Top-tier referral medical institution with dedicated reference laboratories in clinical chemistry and hematology.',
+          slots: 22
+        },
+        {
+          id: 'inst-6',
+          name: 'Aminu Kano Teaching Hospital (AKTH)',
+          state: 'Kano',
+          city: 'Zaria Road, Kano',
+          type: 'Federal Teaching Hospital',
+          status: 'Verified',
+          email: 'placement@akth.gov.ng',
+          phone: '+234 64 648 111',
+          logo: 'https://images.unsplash.com/photo-1586773860418-d37222d8fce3?auto=format&fit=crop&w=200&q=80',
+          accreditationNumber: 'MLSCN/ACC/2020/055',
+          description: 'Premier tertiary healthcare center serving Northern Nigeria with extensive public health diagnostic services.',
+          slots: 25
+        },
+        {
+          id: 'inst-7',
+          name: 'Rivers State University Teaching Hospital (RSUTH)',
+          state: 'Rivers',
+          city: 'Harley Street, Port Harcourt',
+          type: 'State Teaching Hospital',
+          status: 'Verified',
+          email: 'interns@rsuth.ng',
+          phone: '+234 84 230 450',
+          logo: 'https://images.unsplash.com/photo-1551076805-e1869033e561?auto=format&fit=crop&w=200&q=80',
+          accreditationNumber: 'MLSCN/ACC/2022/103',
+          description: 'Modernized diagnostic complex providing high-throughput internship rotations in pathology and microbiology.',
+          slots: 16
+        },
+        {
+          id: 'inst-8',
+          name: 'Federal Medical Centre Owerri (FMC Owerri)',
+          state: 'Imo',
+          city: 'Orlu Road, Owerri',
+          type: 'Federal Tertiary Hospital',
+          status: 'Verified',
+          email: 'training@fmcowerri.gov.ng',
+          phone: '+234 83 234 567',
+          logo: 'https://images.unsplash.com/photo-1505751172876-fa1923c5c528?auto=format&fit=crop&w=200&q=80',
+          accreditationNumber: 'MLSCN/ACC/2023/018',
+          description: 'Rapidly expanding federal referral center accredited for professional internship in clinical laboratory disciplines.',
+          slots: 15
+        }
+      ];
+      localStorage.setItem('mlscn_institutions', JSON.stringify(institutions));
+    }
 
-  if (force || shouldSeed('mlscn_opportunities')) {
-    const opportunities = [
-      {
-        id: 'opp-1',
-        institutionId: 'inst-1',
-        institutionName: 'Lagos University Teaching Hospital (LUTH)',
-        title: 'Medical Laboratory Science Internship 2026/2027 Cohort',
-        state: 'Lagos',
-        type: 'Full-time / Rotational',
-        slots: 25,
-        deadline: '2026-11-30',
-        startDate: '2027-01-15',
-        duration: '12 Months',
-        stipend: '₦85,000 / month',
-        description: 'Applications are invited from suitably qualified candidates for internship training in Medical Laboratory Science for the 2026/2027 service year. Rotations include Chemical Pathology, Medical Microbiology & Parasitology, Hematology & Blood Transfusion Science, and Histopathology/Cytology.',
-        requirements: [
-          'B.MLS degree from an accredited Nigerian university or equivalent foreign qualification',
-          'Provisional registration / Induction certificate from MLSCN',
-          'Current practicing license or index number',
-          'NYSC call-up letter or exemption certificate (if applicable)',
-          'SSCE / WAEC with credits in English, Mathematics, Biology, Chemistry, and Physics'
-        ],
-        status: 'Active',
-        postedDate: '2026-10-01'
-      },
-      {
-        id: 'opp-2',
-        institutionId: 'inst-2',
-        institutionName: 'University College Hospital (UCH)',
-        title: 'B.MLS Professional Internship Program',
-        state: 'Oyo',
-        type: 'Full-time / Rotational',
-        slots: 30,
-        deadline: '2026-12-15',
-        startDate: '2027-02-01',
-        duration: '12 Months',
-        stipend: '₦80,000 / month',
-        description: 'UCH Ibadan invites applications for the 1-year compulsory internship for fresh Medical Laboratory Science graduates. Gain hands-on clinical diagnostic experience in high-throughput reference laboratories.',
-        requirements: [
-          'Bachelor of Medical Laboratory Science (B.MLS)',
-          'MLSCN Provisional Registration Certificate',
-          'Birth Certificate or Declaration of Age',
-          'Three (3) Referee Letters'
-        ],
-        status: 'Active',
-        postedDate: '2026-10-05'
-      },
-      {
-        id: 'opp-3',
-        institutionId: 'inst-3',
-        institutionName: 'National Hospital Abuja',
-        title: 'Clinical Medical Laboratory Internship',
-        state: 'FCT - Abuja',
-        type: 'Full-time / Rotational',
-        slots: 20,
-        deadline: '2026-12-01',
-        startDate: '2027-01-10',
-        duration: '12 Months',
-        stipend: '₦90,000 / month',
-        description: ' Comprehensive internship program at the federal capital. Exposure to advanced molecular diagnostics, immunology, and specialized clinical pathology.',
-        requirements: [
-          'B.MLS Degree with minimum Second Class Lower',
-          'MLSCN Induction Certificate',
-          'Medical Fitness Certificate from a recognized government hospital'
-        ],
-        status: 'Active',
-        postedDate: '2026-09-28'
-      },
-      {
-        id: 'opp-4',
-        institutionId: 'inst-4',
-        institutionName: 'University of Nigeria Teaching Hospital (UNTH)',
-        title: 'Medical Laboratory Science Interns (2026 Batch B)',
-        state: 'Enugu',
-        type: 'Full-time / Rotational',
-        slots: 18,
-        deadline: '2026-11-25',
-        startDate: '2027-01-05',
-        duration: '12 Months',
-        stipend: '₦75,000 / month',
-        description: ' UNTH Ituku-Ozalla offers specialized rotational internship training across all core disciplines of Medical Laboratory Science.',
-        requirements: [
-          'B.MLS / AMLSCN qualification',
-          'Valid MLSCN license or registration receipt',
-          'Curriculum Vitae'
-        ],
-        status: 'Active',
-        postedDate: '2026-10-02'
-      }
-    ];
-    localStorage.setItem('mlscn_opportunities', JSON.stringify(opportunities));
-  }
+    if (force || shouldSeed('mlscn_opportunities', 6)) {
+      const opportunities = [
+        {
+          id: 'opp-1',
+          institutionId: 'inst-1',
+          institutionName: 'Lagos University Teaching Hospital (LUTH)',
+          title: 'Medical Laboratory Science Internship 2026/2027 Cohort',
+          state: 'Lagos',
+          type: 'Full-time / Rotational',
+          slots: 25,
+          deadline: '2026-11-30',
+          startDate: '2027-01-15',
+          duration: '12 Months',
+          stipend: '₦85,000 / month',
+          description: 'Applications are invited from suitably qualified candidates for internship training in Medical Laboratory Science for the 2026/2027 service year. Rotations include Chemical Pathology, Medical Microbiology & Parasitology, Hematology & Blood Transfusion Science, and Histopathology/Cytology.',
+          requirements: [
+            'B.MLS degree from an accredited Nigerian university or equivalent foreign qualification',
+            'Provisional registration / Induction certificate from MLSCN',
+            'Current practicing license or index number',
+            'NYSC call-up letter or exemption certificate (if applicable)',
+            'SSCE / WAEC with credits in English, Mathematics, Biology, Chemistry, and Physics'
+          ],
+          status: 'Active',
+          postedDate: '2026-10-01'
+        },
+        {
+          id: 'opp-2',
+          institutionId: 'inst-2',
+          institutionName: 'University College Hospital (UCH)',
+          title: 'B.MLS Professional Internship Program',
+          state: 'Oyo',
+          type: 'Full-time / Rotational',
+          slots: 30,
+          deadline: '2026-12-15',
+          startDate: '2027-02-01',
+          duration: '12 Months',
+          stipend: '₦80,000 / month',
+          description: 'UCH Ibadan invites applications for the 1-year compulsory internship for fresh Medical Laboratory Science graduates. Gain hands-on clinical diagnostic experience in high-throughput reference laboratories.',
+          requirements: [
+            'Bachelor of Medical Laboratory Science (B.MLS)',
+            'MLSCN Provisional Registration Certificate',
+            'Birth Certificate or Declaration of Age',
+            'Three (3) Referee Letters'
+          ],
+          status: 'Active',
+          postedDate: '2026-10-05'
+        },
+        {
+          id: 'opp-3',
+          institutionId: 'inst-3',
+          institutionName: 'National Hospital Abuja',
+          title: 'Clinical Medical Laboratory Internship',
+          state: 'FCT - Abuja',
+          type: 'Full-time / Rotational',
+          slots: 20,
+          deadline: '2026-12-01',
+          startDate: '2027-01-10',
+          duration: '12 Months',
+          stipend: '₦90,000 / month',
+          description: 'Comprehensive internship program at the federal capital. Exposure to advanced molecular diagnostics, immunology, and specialized clinical pathology.',
+          requirements: [
+            'B.MLS Degree with minimum Second Class Lower',
+            'MLSCN Induction Certificate',
+            'Medical Fitness Certificate from a recognized government hospital'
+          ],
+          status: 'Active',
+          postedDate: '2026-09-28'
+        },
+        {
+          id: 'opp-4',
+          institutionId: 'inst-4',
+          institutionName: 'University of Nigeria Teaching Hospital (UNTH)',
+          title: 'Medical Laboratory Science Interns (2026 Batch B)',
+          state: 'Enugu',
+          type: 'Full-time / Rotational',
+          slots: 18,
+          deadline: '2026-11-25',
+          startDate: '2027-01-05',
+          duration: '12 Months',
+          stipend: '₦75,000 / month',
+          description: 'UNTH Ituku-Ozalla offers specialized rotational internship training across all core disciplines of Medical Laboratory Science.',
+          requirements: [
+            'B.MLS / AMLSCN qualification',
+            'Valid MLSCN license or registration receipt',
+            'Curriculum Vitae'
+          ],
+          status: 'Active',
+          postedDate: '2026-10-02'
+        },
+        {
+          id: 'opp-5',
+          institutionId: 'inst-5',
+          institutionName: 'University of Benin Teaching Hospital (UBTH)',
+          title: 'Molecular Biology & Diagnostic Genetics Internship',
+          state: 'Edo',
+          type: 'Full-time / Rotational',
+          slots: 15,
+          deadline: '2026-12-20',
+          startDate: '2027-02-15',
+          duration: '12 Months',
+          stipend: '₦85,000 / month',
+          description: 'Specialized diagnostic internship focusing on automated clinical chemistry, PCR molecular testing, and transfusion medicine.',
+          requirements: [
+            'B.MLS Degree from an MLSCN accredited program',
+            'Provisional practicing license',
+            'Statement of results'
+          ],
+          status: 'Active',
+          postedDate: '2026-10-08'
+        },
+        {
+          id: 'opp-6',
+          institutionId: 'inst-6',
+          institutionName: 'Aminu Kano Teaching Hospital (AKTH)',
+          title: 'Clinical Microbiology & Parasitology Internship',
+          state: 'Kano',
+          type: 'Full-time / Rotational',
+          slots: 22,
+          deadline: '2026-12-10',
+          startDate: '2027-01-20',
+          duration: '12 Months',
+          stipend: '₦80,000 / month',
+          description: 'Rotational placement with extensive clinical casework in bacteriology, mycology, virology, and medical parasitology.',
+          requirements: [
+            'B.MLS Degree',
+            'MLSCN Registration Certificate',
+            'Two Letters of Recommendation'
+          ],
+          status: 'Active',
+          postedDate: '2026-10-06'
+        },
+        {
+          id: 'opp-7',
+          institutionId: 'inst-7',
+          institutionName: 'Rivers State University Teaching Hospital (RSUTH)',
+          title: 'Hematology & Blood Transfusion Rotation',
+          state: 'Rivers',
+          type: 'Full-time / Rotational',
+          slots: 16,
+          deadline: '2026-12-05',
+          startDate: '2027-02-01',
+          duration: '12 Months',
+          stipend: '₦95,000 / month',
+          description: 'Hands-on practical training in blood banking, component therapy, hemoglobinopathy screening, and coagulation diagnostics.',
+          requirements: [
+            'B.MLS Certificate or Statement of Result',
+            'MLSCN Provisional License',
+            'Evidence of Council Induction'
+          ],
+          status: 'Active',
+          postedDate: '2026-10-04'
+        },
+        {
+          id: 'opp-8',
+          institutionId: 'inst-8',
+          institutionName: 'Federal Medical Centre Owerri (FMC Owerri)',
+          title: 'Chemical Pathology Diagnostic Residency',
+          state: 'Imo',
+          type: 'Full-time / Rotational',
+          slots: 14,
+          deadline: '2026-12-18',
+          startDate: '2027-01-25',
+          duration: '12 Months',
+          stipend: '₦75,000 / month',
+          description: 'Core laboratory diagnostics training covering automated biochemistry, endocrinology, toxicological screening, and urinalysis.',
+          requirements: [
+            'B.MLS qualification',
+            'MLSCN Registration',
+            'Certificate of Medical Fitness'
+          ],
+          status: 'Active',
+          postedDate: '2026-10-09'
+        }
+      ];
+      localStorage.setItem('mlscn_opportunities', JSON.stringify(opportunities));
+    }
 
-  if (force || shouldSeed('mlscn_applications')) {
-    const applications = [
-      {
-        id: 'app-101',
-        opportunityId: 'opp-1',
-        opportunityTitle: 'Medical Laboratory Science Internship 2026/2027 Cohort',
-        institutionName: 'Lagos University Teaching Hospital (LUTH)',
-        applicantId: 'usr-applicant',
-        applicantName: 'Chukwudi Okonkwo',
-        applicantEmail: 'chukwudi.o@example.com',
-        phone: '+234 803 123 4567',
-        mlscnNumber: 'MLSCN/PR/2026/9821',
-        university: 'University of Lagos (UNILAG)',
-        graduationYear: '2026',
-        cgpa: '4.45 (First Class)',
-        status: 'Under Review',
-        submittedDate: '2026-10-08',
-        documents: ['bmls_certificate.pdf', 'mlscn_provisional.pdf', 'nysc_letter.pdf']
-      }
-    ];
-    localStorage.setItem('mlscn_applications', JSON.stringify(applications));
-  }
+    if (force || shouldSeed('mlscn_applications', 4)) {
+      const applications = [
+        {
+          id: 'app-101',
+          opportunityId: 'opp-1',
+          opportunityTitle: 'Medical Laboratory Science Internship 2026/2027 Cohort',
+          institutionName: 'Lagos University Teaching Hospital (LUTH)',
+          applicantId: 'usr-applicant',
+          applicantName: 'Chukwudi Okonkwo',
+          applicantEmail: 'chukwudi.o@example.com',
+          phone: '+234 803 123 4567',
+          mlscnNumber: 'MLSCN/PR/2026/9821',
+          university: 'University of Lagos (UNILAG)',
+          graduationYear: '2026',
+          cgpa: '4.45 (First Class)',
+          status: 'Under Review',
+          submittedDate: '2026-10-08',
+          documents: ['bmls_certificate.pdf', 'mlscn_provisional.pdf', 'nysc_letter.pdf']
+        },
+        {
+          id: 'app-102',
+          opportunityId: 'opp-2',
+          opportunityTitle: 'B.MLS Professional Internship Program',
+          institutionName: 'University College Hospital (UCH)',
+          applicantId: 'usr-applicant',
+          applicantName: 'Chukwudi Okonkwo',
+          applicantEmail: 'chukwudi.o@example.com',
+          phone: '+234 803 123 4567',
+          mlscnNumber: 'MLSCN/PR/2026/9821',
+          university: 'University of Lagos (UNILAG)',
+          graduationYear: '2026',
+          cgpa: '4.45 (First Class)',
+          status: 'Shortlisted',
+          submittedDate: '2026-10-06',
+          documents: ['bmls_certificate.pdf', 'mlscn_provisional.pdf', 'nysc_letter.pdf']
+        },
+        {
+          id: 'app-103',
+          opportunityId: 'opp-3',
+          opportunityTitle: 'Clinical Medical Laboratory Internship',
+          institutionName: 'National Hospital Abuja',
+          applicantId: 'usr-app-2',
+          applicantName: 'Aisha Mohammed',
+          applicantEmail: 'aisha.m@example.com',
+          phone: '+234 802 987 6543',
+          mlscnNumber: 'MLSCN/PR/2026/4102',
+          university: 'Ahmadu Bello University (ABU)',
+          graduationYear: '2026',
+          cgpa: '4.60 (First Class)',
+          status: 'Accepted',
+          submittedDate: '2026-10-03',
+          documents: ['abu_degree.pdf', 'mlscn_cert.pdf', 'nysc_callup.pdf']
+        },
+        {
+          id: 'app-104',
+          opportunityId: 'opp-4',
+          opportunityTitle: 'Medical Laboratory Science Interns (2026 Batch B)',
+          institutionName: 'University of Nigeria Teaching Hospital (UNTH)',
+          applicantId: 'usr-app-3',
+          applicantName: 'Emeka Nnamdi',
+          applicantEmail: 'emeka.n@example.com',
+          phone: '+234 806 333 4455',
+          mlscnNumber: 'MLSCN/PR/2026/7789',
+          university: 'University of Nigeria, Nsukka (UNN)',
+          graduationYear: '2026',
+          cgpa: '4.20 (Second Class Upper)',
+          status: 'Shortlisted',
+          submittedDate: '2026-10-04',
+          documents: ['unn_statement.pdf', 'mlscn_provisional.pdf', 'nysc_exemption.pdf']
+        },
+        {
+          id: 'app-105',
+          opportunityId: 'opp-5',
+          opportunityTitle: 'Molecular Biology & Diagnostic Genetics Internship',
+          institutionName: 'University of Benin Teaching Hospital (UBTH)',
+          applicantId: 'usr-app-4',
+          applicantName: 'Blessing Adeleke',
+          applicantEmail: 'blessing.a@example.com',
+          phone: '+234 814 555 7890',
+          mlscnNumber: 'MLSCN/PR/2026/3312',
+          university: 'University of Benin (UNIBEN)',
+          graduationYear: '2026',
+          cgpa: '4.55 (First Class)',
+          status: 'Accepted',
+          submittedDate: '2026-10-02',
+          documents: ['uniben_cert.pdf', 'mlscn_receipt.pdf', 'nysc_letter.pdf']
+        },
+        {
+          id: 'app-106',
+          opportunityId: 'opp-6',
+          opportunityTitle: 'Clinical Microbiology & Parasitology Internship',
+          institutionName: 'Aminu Kano Teaching Hospital (AKTH)',
+          applicantId: 'usr-app-5',
+          applicantName: 'Fatima Umar',
+          applicantEmail: 'fatima.u@example.com',
+          phone: '+234 803 777 9900',
+          mlscnNumber: 'MLSCN/PR/2026/6654',
+          university: 'Bayero University Kano (BUK)',
+          graduationYear: '2026',
+          cgpa: '4.32 (Second Class Upper)',
+          status: 'Under Review',
+          submittedDate: '2026-10-07',
+          documents: ['buk_result.pdf', 'mlscn_provisional.pdf', 'nysc_letter.pdf']
+        }
+      ];
+      localStorage.setItem('mlscn_applications', JSON.stringify(applications));
+    }
 
-  if (force || shouldSeed('mlscn_announcements')) {
-    const announcements = [
-      {
-        id: 'ann-1',
-        title: 'Guidelines for 2026/2027 Medical Laboratory Science Internship Placement',
-        date: '2026-10-01',
-        category: 'Policy',
-        content: 'The Medical Laboratory Science Council of Nigeria (MLSCN) wishes to inform all newly inducted graduates and approved training institutions regarding the centralized online portal for internship placement. All applications must be submitted directly through this platform.'
-      },
-      {
-        id: 'ann-2',
-        title: 'Mandatory Accreditation Update for Training Centers',
-        date: '2026-09-15',
-        category: 'Institution Notice',
-        content: 'All accredited teaching hospitals and specialist laboratories are required to update their available internship quotas on or before November 30, 2026.'
-      }
-    ];
-    localStorage.setItem('mlscn_announcements', JSON.stringify(announcements));
-  }
+    if (force || shouldSeed('mlscn_announcements', 3)) {
+      const announcements = [
+        {
+          id: 'ann-1',
+          title: 'Guidelines for 2026/2027 Medical Laboratory Science Internship Placement',
+          date: '2026-10-01',
+          category: 'Policy',
+          content: 'The Medical Laboratory Science Council of Nigeria (MLSCN) wishes to inform all newly inducted graduates and approved training institutions regarding the centralized online portal for internship placement. All applications must be submitted directly through this platform.'
+        },
+        {
+          id: 'ann-2',
+          title: 'Mandatory Accreditation Update for Training Centers',
+          date: '2026-09-15',
+          category: 'Institution Notice',
+          content: 'All accredited teaching hospitals and specialist laboratories are required to update their available internship quotas on or before November 30, 2026.'
+        },
+        {
+          id: 'ann-3',
+          title: 'Provisional Registration Indexing Schedule for 2026 Inductees',
+          date: '2026-09-28',
+          category: 'Council Circular',
+          content: 'Candidates who participated in the September 2026 induction ceremonies across approved universities can now verify their provisional license status online using their MLSCN index numbers.'
+        },
+        {
+          id: 'ann-4',
+          title: 'National Quota Allocation Policy for Federal Health Institutions',
+          date: '2026-10-05',
+          category: 'Regulatory Notice',
+          content: 'Pursuant to Council regulations, all participating institutions must prioritize candidates registered under the centralized portal and uphold standard federal stipends across all geopolitical zones.'
+        }
+      ];
+      localStorage.setItem('mlscn_announcements', JSON.stringify(announcements));
+    }
 
-  if (force || !localStorage.getItem('mlscn_user')) {
-    // Default guest / demo user state
-    localStorage.setItem('mlscn_user', JSON.stringify({
-      role: 'guest', // 'applicant', 'institution', 'admin', 'guest'
-      name: '',
-      email: ''
-    }));
-  }
+    if (force || !localStorage.getItem('mlscn_user')) {
+      localStorage.setItem('mlscn_user', JSON.stringify({
+        role: 'guest',
+        name: '',
+        email: ''
+      }));
+    }
   } catch (err) {
     console.warn('Storage initialization warning:', err);
   }

@@ -16,23 +16,84 @@
         <p class="text-slate-600 text-sm mt-1">Aggregated internship placement data across all 36 states and the FCT.</p>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
         <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
-          <p class="text-xs font-semibold text-slate-500 uppercase">Total Placements (2026)</p>
-          <p class="text-3xl font-extrabold text-slate-900 mt-2">1,540</p>
+          <p class="text-xs font-semibold text-slate-500 uppercase">Registered Applicants</p>
+          <p id="stat-apps" class="text-3xl font-extrabold text-slate-900 mt-2">6</p>
         </div>
         <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
           <p class="text-xs font-semibold text-slate-500 uppercase">Accredited Centers</p>
-          <p class="text-3xl font-extrabold text-slate-900 mt-2">45</p>
+          <p id="stat-insts" class="text-3xl font-extrabold text-teal-700 mt-2">8</p>
         </div>
         <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
-          <p class="text-xs font-semibold text-slate-500 uppercase">Placement Success Rate</p>
-          <p class="text-3xl font-extrabold text-emerald-700 mt-2">94.2%</p>
+          <p class="text-xs font-semibold text-slate-500 uppercase">Active Openings</p>
+          <p id="stat-opps" class="text-3xl font-extrabold text-blue-700 mt-2">8</p>
+        </div>
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
+          <p class="text-xs font-semibold text-slate-500 uppercase">Available Slots</p>
+          <p id="stat-slots" class="text-3xl font-extrabold text-emerald-700 mt-2">160</p>
+        </div>
+      </div>
+
+      <div class="bg-white p-8 rounded-2xl border border-slate-200 shadow-xs space-y-4">
+        <h2 class="text-xl font-bold text-slate-900">Zonal & State Placement Distribution</h2>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm">
+            <thead class="bg-slate-50 border-b border-slate-200 text-xs text-slate-500 uppercase">
+              <tr>
+                <th class="py-3 px-4">State</th>
+                <th class="py-3 px-4">Accredited Centers</th>
+                <th class="py-3 px-4">Intern Openings</th>
+                <th class="py-3 px-4">Slots Quota</th>
+                <th class="py-3 px-4">Accreditation Status</th>
+              </tr>
+            </thead>
+            <tbody id="state-breakdown-body" class="divide-y divide-slate-100">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
         </div>
       </div>
     </main>
 
     <div class="dynamic-footer"></div>
     <script src="js/platform.js"></script>
+    <script>
+      function renderAnalytics() {
+        const insts = window.getStoredArray ? window.getStoredArray('mlscn_institutions') : (JSON.parse(localStorage.getItem('mlscn_institutions')) || []);
+        const opps = window.getStoredArray ? window.getStoredArray('mlscn_opportunities') : (JSON.parse(localStorage.getItem('mlscn_opportunities')) || []);
+        const apps = window.getStoredArray ? window.getStoredArray('mlscn_applications') : (JSON.parse(localStorage.getItem('mlscn_applications')) || []);
+
+        const totalSlots = opps.reduce((sum, o) => sum + (parseInt(o.slots) || 0), 0);
+
+        if (document.getElementById('stat-apps')) document.getElementById('stat-apps').innerText = apps.length;
+        if (document.getElementById('stat-insts')) document.getElementById('stat-insts').innerText = insts.length;
+        if (document.getElementById('stat-opps')) document.getElementById('stat-opps').innerText = opps.length;
+        if (document.getElementById('stat-slots')) document.getElementById('stat-slots').innerText = totalSlots;
+
+        const tbody = document.getElementById('state-breakdown-body');
+        if (tbody) {
+          tbody.innerHTML = insts.map(i => {
+            const matchingOpps = opps.filter(o => o.institutionId === i.id || o.state === i.state);
+            const slotsCount = matchingOpps.reduce((s, o) => s + (parseInt(o.slots) || 0), i.slots || 0);
+            return `
+              <tr class="hover:bg-slate-50">
+                <td class="py-3 px-4 font-semibold text-slate-900">${i.state}</td>
+                <td class="py-3 px-4 text-slate-700">${i.name}</td>
+                <td class="py-3 px-4 font-medium text-teal-800">${matchingOpps.length} active</td>
+                <td class="py-3 px-4 font-bold text-slate-900">${slotsCount} slots</td>
+                <td class="py-3 px-4"><span class="bg-emerald-50 text-emerald-800 font-semibold px-2.5 py-1 rounded-full text-xs">Verified 2026/2027</span></td>
+              </tr>
+            `;
+          }).join('');
+        }
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', renderAnalytics);
+      } else {
+        renderAnalytics();
+      }
+    </script>
   </body>
 </html>

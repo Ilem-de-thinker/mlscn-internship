@@ -16,18 +16,40 @@
         <p class="text-slate-600 text-sm mt-1">Audit and review registered B.MLS graduates nationwide.</p>
       </div>
 
-      <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
-        <div class="flex items-center justify-between py-3 border-b border-slate-100">
-          <div>
-            <strong class="text-slate-900">Chukwudi Okonkwo</strong>
-            <p class="text-xs text-slate-500">MLSCN: MLSCN/PR/2026/9821 • University of Lagos</p>
-          </div>
-          <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700">Verified Graduate</span>
-        </div>
+      <div id="admin-applicants-list" class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs divide-y divide-slate-100">
+        <!-- Rendered via JS -->
       </div>
     </main>
 
     <div class="dynamic-footer"></div>
     <script src="js/platform.js"></script>
+    <script>
+      function renderNationalApplicants() {
+        const apps = window.getStoredArray ? window.getStoredArray('mlscn_applications') : (JSON.parse(localStorage.getItem('mlscn_applications')) || []);
+        const container = document.getElementById('admin-applicants-list');
+
+        if (!container) return;
+
+        container.innerHTML = apps.map(a => `
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between py-4 gap-3">
+            <div>
+              <strong class="text-slate-900 text-base">${a.applicantName}</strong>
+              <p class="text-xs text-slate-500 mt-0.5">MLSCN: <strong>${a.mlscnNumber}</strong> • ${a.university} (${a.graduationYear}) • CGPA: ${a.cgpa}</p>
+              <p class="text-xs text-teal-800 font-medium mt-1">Application: ${a.opportunityTitle} at ${a.institutionName}</p>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="text-xs font-semibold px-2.5 py-1 rounded-full ${a.status === 'Accepted' ? 'bg-emerald-50 text-emerald-800' : (a.status === 'Shortlisted' ? 'bg-teal-50 text-teal-800' : 'bg-amber-50 text-amber-800')}">${a.status}</span>
+              <a href="review-application.html?id=${a.id}" class="bg-slate-900 hover:bg-slate-800 text-white font-medium px-3.5 py-1.5 rounded-lg text-xs transition">Audit Profile</a>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', renderNationalApplicants);
+      } else {
+        renderNationalApplicants();
+      }
+    </script>
   </body>
 </html>
